@@ -27,4 +27,5 @@ public class MemberDTO {
 
     LocalDateTime modDate; //수정일
 
+    String role; //사용자 등급 추가 (사용자:ROLE_USER, 관리자:ROLE_ADMIN)
 }

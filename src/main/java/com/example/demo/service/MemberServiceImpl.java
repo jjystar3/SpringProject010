@@ -1,23 +1,29 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.MemberDTO;
-import com.example.demo.entity.Member;
-import com.example.demo.repository.MemberRepository;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.example.demo.dto.MemberDTO;
+import com.example.demo.entity.Member;
+import com.example.demo.repository.MemberRepository;
 
 @Service
 public class MemberServiceImpl implements MemberService { //서비스 인터페이스 상속받기
 
 	@Autowired
 	private MemberRepository repository; //리파지토리 필드 선언
-		
+
+	// 인코더 필드 선언
+	@Autowired
+	PasswordEncoder passwordEncoder;
+
 	@Override
 	public Page<MemberDTO> getList(int pageNumber) {  //페이지 번호 받기
 		int pageIndex = (pageNumber == 0) ? 0 : pageNumber - 1; //page index는 0부터 시작
@@ -40,6 +46,11 @@ public class MemberServiceImpl implements MemberService { //서비스 인터페�
 		}
 		// 해당아이디가 사용되지 않는다면, 회원을 등록하고 처리결과는 성공(true) 반환
 		Member entity = dtoToEntity(dto);
+		
+		// 패스워드 인코더로 패스워드 암호화하기
+		String enPw = passwordEncoder.encode(entity.getPassword());
+		entity.setPassword(enPw);
+		
 		repository.save(entity);
 		return true;
 	}
