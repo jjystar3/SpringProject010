@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -58,25 +60,16 @@ public class BoardController {
 		
 	}
 
-	// 새로운 게시물을 등록하는 메소드
-	@PostMapping("/register") // POST + /board/register
-	// 폼데이터를 수집할 때는 어노테이션 없음
-	
-	// RedirectAttributes: 리다이렉트할 때 데이터를 전달하는 객체 (모델)
-	public String registerPost(BoardDTO dto, RedirectAttributes redirectAttributes) {
-		
-		//화면에서 전달한 폼데이터를 받아서 데이터베이스에 저장
-		//그리고 새로운 게시물번호를 반환받음
-		int no = service.register(dto);		
-		System.out.println("no:" + no);
-		
-		// 이동할 화면에 새로운 게시물 번호를 전달
-		redirectAttributes.addFlashAttribute("no", no);
-		
-		// 목록화면으로 리다이렉트
-		// 리다이렉트: 새로운 URL을 다시 호출하는 것
-		return "redirect:/board/list";
-	}
+
+    // 등록처리
+    @PostMapping("/register")
+    public String registerPost(BoardDTO dto, RedirectAttributes redirectAttributes, Principal principal) {
+    	String id = principal.getName();
+		dto.setWriter(id);
+    	int no = service.register(dto);
+        redirectAttributes.addFlashAttribute("msg", no);
+        return "redirect:/board/list";
+    }
 	
 	// 상세화면을 반환하는 메소드
 	@GetMapping("/read") // /board/read?no=1
