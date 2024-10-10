@@ -78,10 +78,9 @@
      		      success: function(response){
      		    	  if(response){
      		    		  comment_div.innerHTML = ''; //자식 요소 모두 지우기
-     		    		  commentlist = response;
-     		    		  for(i in commentlist){
+     		    		  for(let i in response){
      		    			 // 댓글 하나 꺼내기
-     		    			 let comment = commentlist[i];
+     		    			 let comment = response[i];
      		    			 // 작성자 span 태그 생성
                              let writerSpan = document.createElement('span');
                              // 스타일을 위한 클래스 설정

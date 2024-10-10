@@ -43,9 +43,9 @@ public class BoardController {
 	// 목록 메소드 다시 만들기	
 	@GetMapping("/list")
 	// 페이지 번호 파라미터 추가 (기본값은 1페이지)
-	public void list(@RequestParam(defaultValue = "0", name = "page") int page, Model model) {
+	public void list(@RequestParam(defaultValue = "0", name = "page") int listPage, Model model) {
 		// 게시물 목록 조회
-		Page<BoardDTO> list = service.getList(page); 
+		Page<BoardDTO> list = service.getList(listPage); 
 		// 화면에 게시물 목록과 페이지정보 전달
 		model.addAttribute("list", list);	
 		System.out.println("전체 페이지 수: " + list.getTotalPages());
@@ -60,9 +60,9 @@ public class BoardController {
 		
 	}
 
-
     // 등록처리
     @PostMapping("/register")
+    // 매개변수에 principal을 선언하면, 스프링 컨테이너에서 빈을 꺼내서 주입함
     public String registerPost(BoardDTO dto, RedirectAttributes redirectAttributes, Principal principal) {
     	String id = principal.getName();
 		dto.setWriter(id);
@@ -73,10 +73,10 @@ public class BoardController {
 	
 	// 상세화면을 반환하는 메소드
 	@GetMapping("/read") // /board/read?no=1
-	public void read(@RequestParam(name = "no") int no, @RequestParam(defaultValue = "0", name = "page") int page, Model model) {
+	public void read(@RequestParam(name = "no") int readNo, @RequestParam(defaultValue = "0", name = "page") int page, Model model) {
 		
 		// 게시물 번호를 파라미터로 전달받아 게시물 정보 조회
-		BoardDTO dto = service.read(no);
+		BoardDTO dto = service.read(readNo);
 		
 		// 조회한 데이터를 화면에 전달
 		model.addAttribute("dto", dto);
@@ -87,10 +87,10 @@ public class BoardController {
 	
 	// 수정화면을 반환하는 메소드
 	@GetMapping("/modify") // /board/modify?no=1
-	public void modify(@RequestParam(name = "no") int no, Model model) {
+	public void modify(@RequestParam(name = "no") int modifyNo, Model model) {
 		
 		// 전달받은 게시물 번호로 게시물 정보 조회
-		BoardDTO dto = service.read(no);
+		BoardDTO dto = service.read(modifyNo);
 		
 		// 조회한 데이터를 화면에 전달
 		model.addAttribute("dto", dto);		
@@ -117,15 +117,13 @@ public class BoardController {
     @PostMapping("/remove")
     // 폼 데이터 중 단일 항목을 처리할 때는 자동으로 매핑이 안됨
     // @RequestParam을 사용하여 처리
-    public String removePost(@RequestParam("no") int no) {
+    public String removePost(@RequestParam("no") int removeNo) {
     	
     	// 전달받은 파라미터로 게시물 삭제
-    	service.remove(no);
+    	service.remove(removeNo);
     	
     	// 삭제 후 목록화면으로 이동
         return "redirect:/board/list";
     }
-    
-    
     
 }

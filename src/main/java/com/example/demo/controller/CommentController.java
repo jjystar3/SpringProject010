@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,12 @@ public class CommentController {
 		// 댓글 목록 반환
 		return commentlist;
 	}
-	
+
 	@PostMapping("/register")
-	public Boolean register(CommentDTO dto) {
-		// 임시 아이디. 시큐리티 배운 후에 변경해야함.
-		String id = "user1"; 
+	public Boolean register(CommentDTO dto, Principal principal) { //인증 객체
+		String id = principal.getName(); // 인증객체에서 사용자 아이디 꺼내기
 		dto.setWriter(id);
-		// 새로운 댓글 등록
 		service.register(dto);
-		// 처리결과 반환
 		return true;
 	}
 	
